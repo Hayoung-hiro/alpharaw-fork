@@ -1272,6 +1272,16 @@ def feature_finder_report(
         ],
     )
 
+    # Compute n_scans: scan count of monoisotopic hill per feature.
+    # hill_ptrs is CSR-format; hill_ptrs[x+1] - hill_ptrs[x] = number of
+    # centroids (== scans) in hill x.  pattern[0] is the monoisotopic hill.
+    n_scans_arr = np.empty(len(isotope_charges), dtype=np.int32)
+    for feat_idx in range(len(isotope_charges)):
+        mono_hill = isotope_patterns[iso_idx[feat_idx]]
+        x = sortindex_[mono_hill]
+        n_scans_arr[feat_idx] = hill_ptrs[x + 1] - hill_ptrs[x]
+    df["n_scans"] = n_scans_arr
+
     df.sort_values(["rt_start", "mz"])
 
     return df, lookup_idx
