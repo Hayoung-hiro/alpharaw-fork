@@ -447,13 +447,16 @@ def filter_hills(
         hill_data,
         int_data,
         to_remove,
+        hill_check_large,
+        2,
         window,
     )
 
     idx_ = np.ones(len(hill_data), dtype=np.int32)
     keep = np.ones(len(hill_ptrs) - 1, dtype=np.int32)
 
-    to_remove = to_remove.nonzero()[0]
+    # to_remove is indexed by position in large_peaks: map back to hill indices
+    to_remove = large_peaks[to_remove.nonzero()[0]]
 
     for _ in to_remove:
         idx_[hill_ptrs[_] : hill_ptrs[_ + 1]] = 0
